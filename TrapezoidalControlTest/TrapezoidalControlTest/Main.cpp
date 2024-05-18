@@ -18,7 +18,7 @@ void Main()
 	Vec2 target{ 0,0 };
 	uint64 loop = 0;
 	Plotter plotter1, plotter2, plotter3, plotter4;
-	Trapezoidal auto_set(3.5, 5.0, { 0,0 });
+	Trapezoidal auto_set(4.0, 2.5, { 0,0 });
 	while (System::Update())
 	{
 		ClearPrint();
@@ -65,8 +65,8 @@ void Main()
 			mil = (double)loop * 0.001;
 
 		}
-			//Print << auto_set.next_status();
-			//Print << next_point;
+			Print << auto_set.next_status();
+			Print << next_point;
 			Print << U"x : " << target.x;
 			Print << U"y : " << target.y;
 			//Print << U"xS : " << targetSpeed.x;
@@ -80,7 +80,7 @@ void Main()
 				.drawGrid();
 			plotter2
 				.resize(Scene::Rect())
-				.plot(targetSpeed.y)//y
+				.plot(next_point)//y
 				.maximum(10)
 				.minimum(-10)
 				.draw(Palette::Yellow)
@@ -94,7 +94,7 @@ void Main()
 				.drawGrid();
 			plotter4
 				.resize(Scene::Rect())
-				.plot(auto_set.getTargetPos().y)//y
+				.plot(auto_set.getTargetPos().x)//y
 				.maximum(10)
 				.minimum(-10)
 				.draw(Palette::Red)

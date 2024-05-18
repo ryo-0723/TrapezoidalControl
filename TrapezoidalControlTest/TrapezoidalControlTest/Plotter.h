@@ -18,7 +18,7 @@ public:
 	/// @brief プロッタ作成
 	/// @param parent グラフを描画するエリア
 	/// @param resolution 分解能
-	Plotter(RectF&& parent = {}, const int resolution = 1000) noexcept
+	Plotter(RectF&& parent = {}, const int resolution = 500) noexcept
 		: points{                   }
 		, parent{ std::move(parent) }
 		, font{ 15 }

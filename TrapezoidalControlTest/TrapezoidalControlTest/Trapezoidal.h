@@ -111,25 +111,22 @@ public:
 	void update(Vec2 target, double startSpeed = 0, double endSpeed = 0) {
 		//  X=Vot+(1/2)*at^2;
 		if (!calState) {
-			const Vec2 distance = target - nowPos;//極座標でのrを求める
-			dir = atan2(distance.y, distance.x);//返り値はラジアン atan2は座標から角度を求める
-			// y:- x:+
-			startSpeed *= select(dir);
-			endSpeed *= select(dir);
+			const double distance = target.x - nowPos.x;
+
 
 			upTime = (maxSpeed - startSpeed) / acc; //最高速度までの加速にかかる時間 /s
 			downTime = (maxSpeed - endSpeed) / acc; //減速にかかる時間 /s
 			double L1 = startSpeed * upTime + acc * sq(upTime) * 0.5; //加速時における移動距離 /m
 			double L3 = endSpeed * downTime + acc * sq(downTime) * 0.5; //減速時における移動距離/m
-			if (abs(L1 + L3) > abs(distance.length())) {//台形ができなくなり、三角形になるときの制御
-				limitSpeed = 2.00 * acc * distance.length() * 0.5 + sq(startSpeed);
+			if (abs(L1 + L3) > abs(distance)) {//台形ができなくなり、三角形になるときの制御
+				limitSpeed = 2.00 * acc * abs(distance) * 0.5 + sq(startSpeed);
 				limitSpeed = sqrt(limitSpeed);
 				upTime = (limitSpeed - startSpeed) / acc;
 				downTime = (limitSpeed - endSpeed) / acc;
 				maxPowerTime = 0.0;
 			}
 			else {//台形が作れる場合の制御 
-				maxPowerTime = (distance.length() - L1 - L3) / maxSpeed; //最高速度での移動時間 /s
+				maxPowerTime = (abs(distance) - L1 - L3) / maxSpeed; //最高速度での移動時間 /s
 				limitSpeed = maxSpeed;
 			}
 			calState = true;
@@ -143,13 +140,10 @@ public:
 		double target_ = acc * sq(ut) * 0.50 + startSpeed * ut
 			+ maxSpeed * constrain(t - upTime, 0.00, maxPowerTime)
 			+ (-acc * sq(dt) * 0.50) + limitSpeed * dt;
-		//座標の更新をするところ
-		targetPos.x = target_ * cos(dir) + nowPos.x;
-		targetPos.y = target_ * sin(dir) + nowPos.y;
 
+		targetPos.x = target_ + nowPos.x;
 		if (upTime + downTime + maxPowerTime <= t) {
 			nowPos.x = targetPos.x;//一つの経路を巡行し終えた時の座標の情報を保持
-			nowPos.y = targetPos.y;
 			myTimer.stop();
 			myTimer.reset();
 			calState = false;
@@ -157,7 +151,6 @@ public:
 		}
 
 		// difdistance / diftime
-		targetSpeed.y = (getTargetPos().y - oldTarget.y) / (((double)millis() * 0.001) - oldMillis);  //m/s
 		targetSpeed.x = (getTargetPos().x - oldTarget.x) / (((double)millis() * 0.001) - oldMillis);  //m/s
 		oldMillis = millis() * 0.001;
 		oldTarget = getTargetPos();
