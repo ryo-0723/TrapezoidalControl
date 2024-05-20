@@ -52,8 +52,8 @@ class Trapezoidal {
 private:
 	double maxSpeed, limitSpeed;
 	double upTime, maxPowerTime, downTime;
-	double dir, acc;
-	bool calState, nextState;
+	double acc;
+	bool calState, nextState,dir ;
 	Vec2 nowPos;
 	Vec2 targetPos;
 	Vec2 targetSpeed;
@@ -93,9 +93,9 @@ public:
 		, upTime()
 		, maxPowerTime()
 		, downTime()
-		, dir()
 		, calState(false)
 		, nextState(true)
+		,dir()
 		, targetSpeed()
 		, oldTarget()
 		, oldMillis()
@@ -112,7 +112,7 @@ public:
 		//  X=Vot+(1/2)*at^2;
 		if (!calState) {
 			const double distance = target.x - nowPos.x;
-
+			dir = (distance > 0.0 ? 1 : 0);
 
 			upTime = (maxSpeed - startSpeed) / acc; //最高速度までの加速にかかる時間 /s
 			downTime = (maxSpeed - endSpeed) / acc; //減速にかかる時間 /s
@@ -141,7 +141,7 @@ public:
 			+ maxSpeed * constrain(t - upTime, 0.00, maxPowerTime)
 			+ (-acc * sq(dt) * 0.50) + limitSpeed * dt;
 
-		targetPos.x = target_ + nowPos.x;
+		targetPos.x = target_ * (dir ? 1 : -1) + nowPos.x;
 		if (upTime + downTime + maxPowerTime <= t) {
 			nowPos.x = targetPos.x;//一つの経路を巡行し終えた時の座標の情報を保持
 			myTimer.stop();

@@ -7,7 +7,7 @@ void Main()
 	Vec2 point1{ 1.5,8.0 };
 	Vec2 point2{ 4.0,-9.5 };
 	Vec2 point3{ 9.0,5.0 };
-	Vec2 point4{ 10.0,0.0 };
+	Vec2 point4{ -10.0,0.0 };
 
 	Vec2 point{ 0,0 };
 	double startS = 0;
@@ -22,7 +22,6 @@ void Main()
 	while (System::Update())
 	{
 		ClearPrint();
-		auto_set.update(point, startS, endS);
 
 		if (Time::GetMillisec() > 3000) {
 			if (auto_set.next_status()) {
@@ -55,6 +54,7 @@ void Main()
 		}
 		//理想ではこの形で自動を回すこと
 
+		auto_set.update(point, startS, endS);
 
 		loop = Time::GetMillisec();
 		if (loop % 10) {
@@ -67,8 +67,8 @@ void Main()
 		}
 			Print << auto_set.next_status();
 			Print << next_point;
-			Print << U"x : " << target.x;
-			Print << U"y : " << target.y;
+			//Print << U"x : " << target.x;
+			//Print << U"y : " << target.y;
 			//Print << U"xS : " << targetSpeed.x;
 			//Print << U"yS : " << targetSpeed.y;
 			plotter1
