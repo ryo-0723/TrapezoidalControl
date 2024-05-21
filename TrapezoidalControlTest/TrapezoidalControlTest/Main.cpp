@@ -4,29 +4,30 @@
 
 void Main()
 {
-	Vec2 point1{ 1.5,8.0 };
-	Vec2 point2{ 4.0,-9.5 };
-	Vec2 point3{ 9.0,5.0 };
-	Vec2 point4{ -10.0,0.0 };
+	double point1 = 1.5;
+	double point2 = 4.0;
+	double point3 = 9.0;
+	double point4 = -10;
+	double point5 = 5;
 
-	Vec2 point{ 0,0 };
+	double point = 0;
 	double startS = 0;
 	double endS = 0;
 	int next_point = 0;
 	double mil = 0;
-	Vec2 targetSpeed{ 0,0 };
-	Vec2 target{ 0,0 };
+	double targetSpeed = 0;
+	double target = 0;
 	uint64 loop = 0;
 	Plotter plotter1, plotter2, plotter3, plotter4;
-	Trapezoidal auto_set(4.0, 2.5, { 0,0 });
+	Trapezoidal auto_set(5.0, 1.5, 0);
+	bool oldClick = false;
 	while (System::Update())
 	{
-		ClearPrint();
+	//	ClearPrint();
 
 		if (Time::GetMillisec() > 3000) {
-			if (auto_set.next_status()) {
+			if (auto_set.status()) {
 				next_point++;
-				auto_set.set_next_status();
 			}
 		}
 
@@ -51,29 +52,35 @@ void Main()
 			startS = 0;
 			endS = 0;
 			break;
+		case 5:
+			point = point5;
+			startS = 0;
+			endS = 0;
+			break;
 		}
 		//理想ではこの形で自動を回すこと
 
+		if (KeySpace.pressed()) {
+			if (oldClick == false) {
+			next_point++;
+			}
+			oldClick = true;
+		}
+		else {
+			oldClick = false;
+		}
+
 		auto_set.update(point, startS, endS);
 
-		loop = Time::GetMillisec();
-		if (loop % 10) {
-			targetSpeed.y = (auto_set.getTargetPos().y - target.y) / (((double)loop * 0.001) - mil);//m/s
-			targetSpeed.x = (auto_set.getTargetPos().x - target.x) / (((double)loop * 0.001) - mil);//m/s
-			target = auto_set.getTargetPos();
-
-			mil = (double)loop * 0.001;
-
-		}
-			Print << auto_set.next_status();
-			Print << next_point;
+		//	Print << auto_set.status();
+		//	Print << next_point;
 			//Print << U"x : " << target.x;
 			//Print << U"y : " << target.y;
 			//Print << U"xS : " << targetSpeed.x;
 			//Print << U"yS : " << targetSpeed.y;
 			plotter1
 				.resize(Scene::Rect())
-				.plot(targetSpeed.x)//x
+				.plot(auto_set.getNowSpeed())//x
 				.maximum(10)
 				.minimum(-10)
 				.draw(Palette::Green)
@@ -94,7 +101,7 @@ void Main()
 				.drawGrid();
 			plotter4
 				.resize(Scene::Rect())
-				.plot(auto_set.getTargetPos().x)//y
+				.plot(auto_set.getTargetPos())//y
 				.maximum(10)
 				.minimum(-10)
 				.draw(Palette::Red)
