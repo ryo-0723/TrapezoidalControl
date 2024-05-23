@@ -17,13 +17,22 @@ void Main()
 	double mil = 0;
 	double targetSpeed = 0;
 	double target = 0;
+	double targetpoint = 0;
 	uint64 loop = 0;
 	Plotter plotter1, plotter2, plotter3, plotter4;
-	Trapezoidal auto_set(5.0, 1.5, 0);
+	Trapezoidal auto_set(0.5, 4.5, -10);
 	bool oldClick = false;
+	Window::Resize(1500, 1000);
+
+	double oldSpeed = 0;
+	bool count = true;
+	double oldNowPos, oldTargetPos;
+	bool oldStatus;
+	double oldTime;
+
 	while (System::Update())
 	{
-	//	ClearPrint();
+		ClearPrint();
 
 		if (Time::GetMillisec() > 3000) {
 			if (auto_set.status()) {
@@ -31,6 +40,12 @@ void Main()
 			}
 		}
 
+		SimpleGUI::Slider(targetpoint, { 200,20 },400);
+
+		if (next_point > 4)
+		{
+			next_point = 0;
+		}
 		switch (next_point) {
 		case 1:
 			point = point1;
@@ -69,42 +84,64 @@ void Main()
 		else {
 			oldClick = false;
 		}
+		auto_set.update(targetpoint * 20 - 10/*, endS */);
 
-		auto_set.update(point, startS, endS);
-
+		if (count) {
+			if (abs(oldSpeed - auto_set.getNowSpeed()) > 0.5) {
+				count = false;
+			}
+			else {
+				oldSpeed = auto_set.getNowSpeed();
+				oldTargetPos = auto_set.getTargetPos();
+				oldNowPos = auto_set.getNowPos();
+				oldStatus = auto_set.status();
+				oldTime = auto_set.getTime();
+			}
+		}
 		//	Print << auto_set.status();
 		//	Print << next_point;
-			//Print << U"x : " << target.x;
-			//Print << U"y : " << target.y;
+		    Print << U"Input    :" << targetpoint * 20 - 10;
+			Print << U"NowPos   : " << auto_set.getNowPos();
+			Print << U"TargetPos: " << auto_set.getTargetPos();
+			Print << U"Speed    : " << auto_set.getNowSpeed();
+			Print << U"Status   : " << auto_set.status();
+
+			Print << U"Stops    : " << oldSpeed;
+			Print << U"StopsT   : " << oldTargetPos;
+			Print << U"StopsN   : " << oldNowPos;
+			Print << U"StopsS   : " << oldStatus;
+			Print << U"StopsTime: " << oldTime;
+
 			//Print << U"xS : " << targetSpeed.x;
 			//Print << U"yS : " << targetSpeed.y;
-			plotter1
-				.resize(Scene::Rect())
-				.plot(auto_set.getNowSpeed())//x
-				.maximum(10)
-				.minimum(-10)
-				.draw(Palette::Green)
-				.drawGrid();
+
 			plotter2
 				.resize(Scene::Rect())
-				.plot(next_point)//y
+				.plot(/*next_point*/0)//y
 				.maximum(10)
 				.minimum(-10)
 				.draw(Palette::Yellow)
 				.drawGrid();
-			plotter3
-				.resize(Scene::Rect())
-				.plot(0/*auto_set.getTargetPos().x*/)//y
-				.maximum(10)
-				.minimum(-10)
-				.draw(Palette::Blue)
-				.drawGrid();
+			//plotter3
+			//	.resize(Scene::Rect())
+			//	.plot(0/*auto_set.getTargetPos().x*/)//y
+			//	.maximum(10)
+			//	.minimum(-10)
+			//	.draw(Palette::Blue)
+			//	.drawGrid();
 			plotter4
 				.resize(Scene::Rect())
 				.plot(auto_set.getTargetPos())//y
 				.maximum(10)
 				.minimum(-10)
 				.draw(Palette::Red)
+				.drawGrid();
+			plotter1
+				.resize(Scene::Rect())
+				.plot(auto_set.getNowSpeed())//x
+				.maximum(5)
+				.minimum(-5)
+				.draw(Palette::Green)
 				.drawGrid();
 		
 	}
