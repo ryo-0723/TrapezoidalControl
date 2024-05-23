@@ -60,6 +60,7 @@ private:
 	bool once;
 	int count;
 	double all;
+	double dis;
 	MyTimer myTimer;
 
 
@@ -102,6 +103,7 @@ public:
 		,once(false)
 		,count()
 		,all()
+		,dis()
 		, myTimer()
 	{
 	}
@@ -140,7 +142,7 @@ public:
 			downTime = (maxSpeed - endSpeed) / acc; //減速にかかる時間 /s
 			const double L1 = startSpeed * upTime + acc * sq(upTime) * 0.5; //加速時における移動距離 /m
 			const double L3 = endSpeed * downTime + acc * sq(downTime) * 0.5; //減速時における移動距離/m
-			if (abs(L1 + L3) > abs(distance)) { //台形ができなくなり、三角形になるときの制御
+			if (abs(L1) + abs(L3) > abs(distance)) { //台形ができなくなり、三角形になるときの制御
 				limitSpeed = 2.00 * acc * distance * 0.5 + sq(startSpeed);//+限定
 				limitSpeed = sqrt(limitSpeed) * (dir ? 1 : -1);//必ず＋になるため、向きによって＋ーを変える
 				upTime = (limitSpeed - startSpeed) / acc;
@@ -156,6 +158,11 @@ public:
 			all = acc * sq(upTime) * 0.50 + startSpeed * upTime
 				+ maxSpeed * maxPowerTime
 				+ (-acc * sq(downTime) * 0.50) + limitSpeed * downTime + nowPos;
+
+			dis = distance +nowPos;
+			//distanceと計算した距離が同じじゃない
+//何度計算しなおしても同じっぽい
+			//startSpeedが原因？
 		}
 
 		double t = myTimer.getTime() * 0.001;  //s
@@ -181,6 +188,7 @@ public:
 		Print << oldTarget;
 		Print << count;
 		Print << all;
+		Print << dis;
 	}
 
 	double getTime() {
