@@ -58,7 +58,8 @@ private:
 	double startSpeed, endSpeed;
 	bool calState;
 	bool once;
-	double target_;
+	int count;
+	double all;
 	MyTimer myTimer;
 
 
@@ -99,7 +100,8 @@ public:
 		, endSpeed()
 		, calState(false)
 		,once(false)
-		,target_()
+		,count()
+		,all()
 		, myTimer()
 	{
 	}
@@ -112,18 +114,17 @@ public:
 		// X=Vot+(1/2)*at^2;
 		// V=a*t +Vo;
 		// V^2-Vo^2 =2as;
-		if (oldTarget-target != 0) {//目標座標が変わったときは計算しなおす
+		if (oldTarget != target) {//目標座標が変わったときは計算しなおす
 			myTimer.stop();
 			myTimer.reset();
 			nextState = false;
 			oldTarget = target;
-			calState = true;
-
+			count++;
 			nowPos = targetPos;//途中までの経路情報の保持
+			startSpeed = nowSpeed;//最初のスピードは前の経路情報をほじ
+			endSpeed = endS;
 			const double distance = target - nowPos;//距離を求める
 			dir = (distance > 0.0 ? 1 : 0);//増減の方向を決める
-			endSpeed = endS;
-			startSpeed = nowSpeed;//最初のスピードは前の経路情報をほじ
 
 			if (!dir) {//マイナス方向への進行の場合
 				endSpeed = abs(endSpeed) * -1;
@@ -139,7 +140,7 @@ public:
 			downTime = (maxSpeed - endSpeed) / acc; //減速にかかる時間 /s
 			const double L1 = startSpeed * upTime + acc * sq(upTime) * 0.5; //加速時における移動距離 /m
 			const double L3 = endSpeed * downTime + acc * sq(downTime) * 0.5; //減速時における移動距離/m
-			if (abs(L1) + abs(L3) > abs(distance)) { //台形ができなくなり、三角形になるときの制御
+			if (abs(L1 + L3) > abs(distance)) { //台形ができなくなり、三角形になるときの制御
 				limitSpeed = 2.00 * acc * distance * 0.5 + sq(startSpeed);//+限定
 				limitSpeed = sqrt(limitSpeed) * (dir ? 1 : -1);//必ず＋になるため、向きによって＋ーを変える
 				upTime = (limitSpeed - startSpeed) / acc;
@@ -151,30 +152,35 @@ public:
 				limitSpeed = maxSpeed;
 			}
 			myTimer.start();//タイマーを開始する←何度呼び出しても一度だけ実行される
+
+			all = acc * sq(upTime) * 0.50 + startSpeed * upTime
+				+ maxSpeed * maxPowerTime
+				+ (-acc * sq(downTime) * 0.50) + limitSpeed * downTime + nowPos;
 		}
 
 		double t = myTimer.getTime() * 0.001;  //s
 		double ut = constrain(t, 0.00, upTime);
 		double mt = constrain(t - upTime, 0.00, maxPowerTime);
 		double dt = constrain(t - (upTime + maxPowerTime), 0.00, downTime);
-		 target_ = acc * sq(ut) * 0.50 + startSpeed * ut
+		double targets = acc * sq(ut) * 0.50 + startSpeed * ut
 			+ maxSpeed * mt
 			+ (-acc * sq(dt) * 0.50) + limitSpeed * dt;
 
 		if (!nextState) {
 			nowSpeed = startSpeed + acc * ut + -acc * dt;
-			targetPos = target_ + nowPos;
+			targetPos = targets + nowPos;
 		}
-
 		if (upTime + downTime + maxPowerTime <= t) {
 			nowPos = targetPos;//一つの経路を巡行し終えた時の座標の情報を保持
 			myTimer.stop();
 			myTimer.reset();
 			nextState = true;
-			calState = false;
 			//oldTarget = nowPos;
+			count = 0;
 		}
 		Print << oldTarget;
+		Print << count;
+		Print << all;
 	}
 
 	double getTime() {
