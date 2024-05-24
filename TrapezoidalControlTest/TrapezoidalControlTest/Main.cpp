@@ -4,11 +4,11 @@
 
 void Main()
 {
-	double point1 = 1.5;
-	double point2 = 4.0;
-	double point3 = 9.0;
-	double point4 = -10;
-	double point5 = 5;
+	double point1 = 1500;
+	double point2 = 4000;
+	double point3 = 9000;
+	double point4 = -1000;
+	double point5 = 5000;
 
 	double point = 0;
 	double startS = 0;
@@ -20,7 +20,7 @@ void Main()
 	double targetpoint = 0;
 	uint64 loop = 0;
 	Plotter plotter1, plotter2, plotter3, plotter4;
-	Trapezoidal auto_set(0.5, 4.5, -10);
+	Trapezoidal auto_set(5000, 4500, -10000);
 	bool oldClick = false;
 	Window::Resize(1500, 1000);
 
@@ -42,34 +42,29 @@ void Main()
 
 		SimpleGUI::Slider(targetpoint, { 200,20 },400);
 
-		if (next_point > 4)
+	/*	if (next_point > 4)
 		{
 			next_point = 0;
-		}
+		}*/
 		switch (next_point) {
 		case 1:
 			point = point1;
-			startS = 0;
-			endS = 1.2;
+			endS = 1200;
 			break;
 		case 2:
 			point = point2;
-			startS = 1.2;
-			endS = 0.5;
+			endS = 5000;
 			break;
 		case 3:
 			point = point3;
-			startS = 0.5;
 			endS = 0;
 			break;
 		case 4:
 			point = point4;
-			startS = 0;
-			endS = 0;
+			endS = 1000;
 			break;
 		case 5:
 			point = point5;
-			startS = 0;
 			endS = 0;
 			break;
 		}
@@ -84,10 +79,11 @@ void Main()
 		else {
 			oldClick = false;
 		}
-		auto_set.update(targetpoint * 20 - 10/*, endS */);
+		auto_set.update(targetpoint * 20000 - 10000);
+		//auto_set.update(point, endS );
 
 		if (count) {
-			if (abs(oldSpeed - auto_set.getNowSpeed()) > 0.5) {
+			if (abs(oldSpeed - auto_set.getNowSpeed()) > 50) {
 				count = false;
 			}
 			else {
@@ -100,7 +96,7 @@ void Main()
 		}
 		//	Print << auto_set.status();
 		//	Print << next_point;
-		    Print << U"Input    :" << targetpoint * 20 - 10;
+		   // Print << U"Input    :" << targetpoint * 20000 - 10000;
 			Print << U"NowPos   : " << auto_set.getNowPos();
 			Print << U"TargetPos: " << auto_set.getTargetPos();
 			Print << U"Speed    : " << auto_set.getNowSpeed();
@@ -132,15 +128,15 @@ void Main()
 			plotter4
 				.resize(Scene::Rect())
 				.plot(auto_set.getTargetPos())//y
-				.maximum(10)
-				.minimum(-10)
+				.maximum(10000)
+				.minimum(-10000)
 				.draw(Palette::Red)
 				.drawGrid();
 			plotter1
 				.resize(Scene::Rect())
 				.plot(auto_set.getNowSpeed())//x
-				.maximum(5)
-				.minimum(-5)
+				.maximum(5000)
+				.minimum(-5000)
 				.draw(Palette::Green)
 				.drawGrid();
 		
