@@ -189,4 +189,7 @@ public:
 	double getNowSpeed() const{
 		return nowSpeed * 1000;
 	}
+	double calAllTime()const {
+		return upTime + downTime + maxPowerTime;
+	}
 };

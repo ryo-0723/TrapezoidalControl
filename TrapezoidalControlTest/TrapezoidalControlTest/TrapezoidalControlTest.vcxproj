@@ -325,9 +325,10 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bezier3.hpp" />
     <ClInclude Include="Plotter.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Trapezoidal.h" />
+    <ClInclude Include="Trapezoidal.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">

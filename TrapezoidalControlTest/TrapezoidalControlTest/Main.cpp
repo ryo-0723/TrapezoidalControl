@@ -1,5 +1,6 @@
 ﻿# include <Siv3D.hpp> // OpenSiv3D v0.6.
-#include"Trapezoidal.h"
+#include"Trapezoidal.hpp"
+#include"Bezier3.hpp"
 #include"Plotter.h"
 
 void Main()
@@ -30,6 +31,11 @@ void Main()
 	bool oldStatus;
 	double oldTime;
 
+	//こんな感じでベジェ用の制御点の配列を作る
+	//一個飛ばしで経由点が入る予定
+	std::vector<Vec2> point = { {0, 0}, { 10,30 }, { 50,20 } };
+
+	Udon::Beziers3(point);
 	while (System::Update())
 	{
 		ClearPrint();

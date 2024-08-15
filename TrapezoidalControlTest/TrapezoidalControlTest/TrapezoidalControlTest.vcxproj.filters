@@ -144,6 +144,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TrapezoidalDual.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\icon.ico">
@@ -812,7 +815,7 @@
     <ClInclude Include="Plotter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Trapezoidal.h">
+    <ClInclude Include="Trapezoidal.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
