@@ -37,35 +37,6 @@ namespace Udon {
 
 			return *this;
 		}
-		void f() {
-			n = n - 1;
-			if (n != 0) {
-				f();
-			}
-			else {
-				Print << U"end";
-			}
-		}
-
-		f(10);
-
-		void f(int n)
-		{
-			if (n == 0)
-				return;
-
-			f(n - 1);
-		}
-
-		f(0, 10);
-
-		void f(int n, int end)
-		{
-			if (n == end)
-				return;
-
-			f(n + 1, end);
-		}
 
 		Vec2 getPos(const double tar) {
 			//0 <= tar <= 1.0
